@@ -1,30 +1,40 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import CreateReport from '../views/CreateReport'
+import Report from '../views/Report.vue'
+import Reports from '../views/Reports'
 
-Vue.use(VueRouter);
+Vue.use(VueRouter)
 
 const routes = [
+  { path: '/', redirect: '/reports/api' },
   {
-    path: "/",
-    name: "Home",
-    component: Home
+    path: '/reports/:type',
+    name: 'ReportsList',
+    component: Reports,
+    beforeEnter: (to, _, next) => {
+      if (!['api', 'local'].includes(to.params.type)) {
+        next({ name: 'CreateReport' })
+      }
+      next()
+    },
   },
   {
-    path: "/about",
-    name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
-  }
-];
+    path: '/reports/:type/:id',
+    name: 'Report',
+    component: Report,
+  },
+  {
+    path: '/create',
+    name: 'CreateReport',
+    component: CreateReport,
+  },
+]
 
 const router = new VueRouter({
-  mode: "history",
+  mode: 'history',
   base: process.env.BASE_URL,
-  routes
-});
+  routes,
+})
 
-export default router;
+export default router
